@@ -31,11 +31,11 @@ func GetQuoteDataAsMessage(ticker string) (message string) {
 	var quote = GetQuoteData(ticker)
 
 	if len(quote.QuoteResponse.Result) != 0 {
-		message = fmt.Sprintf("Ticker: %s \n\nEmpresa: %s\nFechamento: %.2f\nAbertura: %.2f\nPreço Atual:  %.2f\nVariação (R$): %.2f\nVariação (%%): %.2f",
+		message = fmt.Sprintf("Ticker: %s \n\nEmpresa: %s\nFechamento: %.2f\nAbertura: %.2f\nPreço Atual: %.2f\nVariação (R$): %.2f\nVariação (%%): %.2f",
 			ticker, quote.QuoteResponse.Result[0].LongName, quote.QuoteResponse.Result[0].RegularMarketPreviousClose, quote.QuoteResponse.Result[0].RegularMarketOpen,
 			quote.QuoteResponse.Result[0].RegularMarketPrice, quote.QuoteResponse.Result[0].RegularMarketChange, quote.QuoteResponse.Result[0].RegularMarketChangePercent)
 	} else {
-		message = fmt.Sprintf("Não encontrado.\n\nTicker: %s", ticker)
+		message = fmt.Sprintf("Ticker: %s\n\nNão encontrado.", ticker)
 	}
 
 	return

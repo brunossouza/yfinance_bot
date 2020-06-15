@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"strings"
 	"time"
 	"yfinance/database"
 	"yfinance/models"
@@ -34,9 +35,17 @@ func TelegramBotHandler() {
 	})
 
 	bot.Handle("/check", func(m *tgbot.Message) {
-		ticker := m.Payload
-		var msg = GetQuoteDataAsMessage(ticker)
-		bot.Send(m.Sender, msg)
+		if m.Payload != "" {
+			payload := m.Payload
+			var tickers = strings.Split(payload, " ")
+			for _, ticker := range tickers {
+				var msg = GetQuoteDataAsMessage(strings.ToUpper(ticker))
+				bot.Send(m.Sender, msg)
+			}
+		} else {
+			var msg = "usage: /check ticker ticker1 ... tickerN"
+			bot.Send(m.Sender, msg)
+		}
 	})
 
 	bot.Handle("/start", func(m *tgbot.Message) {
