@@ -2,6 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"os"
+	"yfinance/controllers"
+	"yfinance/database"
+	"yfinance/models"
 )
 
 // variaveis de configuração
@@ -32,8 +37,6 @@ func main() {
 
 	// var tickers = [4]string{"WEGE3", "ITSA4", "ROMI3", "JHSF3"}
 
-	// controllers.TelegramBotHandler("token")
-
 	// fmt.Println("")
 
 	// for _, ticker := range tickers {
@@ -50,25 +53,25 @@ func main() {
 	// 	fmt.Println("")
 	// }
 
-	// if len(os.Args) < 2 {
-	// 	fmt.Println("expected 'foo' or 'bar' subcommands")
-	// 	os.Exit(1)
-	// }
+	if len(os.Args) < 2 {
+		fmt.Println("expected 'foo' or 'bar' subcommands")
+		os.Exit(1)
+	}
 
-	// switch os.Args[1] {
-	// case "config":
-	// 	configCmd.Parse(os.Args[2:])
-	// 	if tgBotToken != "" {
-	// 		database.SaveBotConfig(&models.TelegramBotConfig{Token: tgBotToken})
-	// 	}
+	switch os.Args[1] {
+	case "config":
+		configCmd.Parse(os.Args[2:])
+		if tgBotToken != "" {
+			fmt.Println("Salvando token api do telegram.")
+			database.SaveBotConfig(&models.TelegramBotConfig{Token: tgBotToken})
+			fmt.Println("Token registrado com sucesso.")
+		}
 
-	// case "acao":
-	// 	actionCmd.Parse(os.Args[2:])
-	// 	fmt.Println("subcommand 'acao'")
-	// 	fmt.Println("  tgBotToken:", ticker)
+	case "start":
+		controllers.TelegramBotHandler()
 
-	// default:
-	// 	fmt.Println("expected 'foo' or 'bar' subcommands")
-	// 	os.Exit(1)
-	// }
+	default:
+		fmt.Println("expected 'foo' or 'bar' subcommands")
+		os.Exit(1)
+	}
 }

@@ -51,3 +51,13 @@ func GetUsuario(userID int) (user models.Usuario) {
 
 	return
 }
+
+// GetTelegramBotConfig pega a configuração do token
+func GetTelegramBotConfig() (config models.TelegramBotConfig) {
+	db := GetConexao()
+	defer db.Close()
+
+	db.First(&config)
+
+	return
+}

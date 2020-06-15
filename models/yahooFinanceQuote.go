@@ -24,12 +24,12 @@ type YahooFinanceQuote struct {
 
 type QuoteResponse struct {
 	Result []Result `json:"result"`
-	Error  *Error   `json:"error,omitempty"`
+	Error  Error    `json:"error"`
 }
 
 type Error struct {
-	Code        *string `json:"code,omitempty"`
-	Description *string `json:"description,omitempty"`
+	Code        string `json:"code"`
+	Description string `json:"description"`
 }
 
 type Result struct {
