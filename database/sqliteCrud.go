@@ -13,9 +13,18 @@ func GetConexao() (db *gorm.DB) {
 	db, err := gorm.Open("sqlite3", "database.db")
 	utils.CheckError(err)
 
-	db.AutoMigrate(&models.Usuario{})
-
 	return
+}
+
+// MigrateDatabaseSchema func to create the database
+func MigrateDatabaseSchema() {
+	db := GetConexao()
+	defer db.Close()
+
+	// Migrate the schema
+	db.AutoMigrate(&models.TelegramBotConfig{})
+	db.AutoMigrate(&models.Usuario{})
+	db.AutoMigrate(&models.Acoes{})
 }
 
 // SaveBotConfig func para salvar a configuração do bot
@@ -33,16 +42,32 @@ func SaveBotConfig(config *models.TelegramBotConfig) {
 	db.Create(config)
 }
 
+// GetTelegramBotConfig pega a configuração do token
+func GetTelegramBotConfig() (config models.TelegramBotConfig) {
+	db := GetConexao()
+	defer db.Close()
+
+	db.First(&config)
+
+	return
+}
+
 // SaveUsuario func para salvar os dados do usuário
 func SaveUsuario(user *models.Usuario) {
 	db := GetConexao()
 	defer db.Close()
 
-	// Migrate the schema
-	db.AutoMigrate(&models.Usuario{})
-
 	// Create
 	db.Create(user)
+}
+
+// SaveAcao func para salvar os dados da ação
+func SaveAcao(acao *models.Acoes) {
+	db := GetConexao()
+	defer db.Close()
+
+	// Create
+	db.Create(acao)
 }
 
 // GetUsuario func para salvar os dados do usuário
@@ -55,12 +80,13 @@ func GetUsuario(userID int) (user models.Usuario) {
 	return
 }
 
-// GetTelegramBotConfig pega a configuração do token
-func GetTelegramBotConfig() (config models.TelegramBotConfig) {
+// HasUsuarioRegistred func para salvar os dados do usuário
+func HasUsuarioRegistred(userID int) bool {
 	db := GetConexao()
 	defer db.Close()
 
-	db.First(&config)
+	var user models.Usuario
+	db.Where("user_id = ?", userID).First(&user)
 
-	return
+	return user.UserID != 0
 }

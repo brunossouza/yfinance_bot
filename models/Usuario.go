@@ -10,13 +10,4 @@ type Usuario struct {
 	UserID   int
 	Nome     string
 	Username string
-	Acoes    []Acoes `gorm:"foreignkey:UsuarioRefer"`
-}
-
-// Acoes de cada usuario
-type Acoes struct {
-	gorm.Model
-	Ticker       string
-	Variacao     float64
-	UsuarioRefer string
 }

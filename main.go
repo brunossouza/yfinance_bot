@@ -25,6 +25,9 @@ var (
 )
 
 func init() {
+	// Create the batabase
+	database.MigrateDatabaseSchema()
+
 	configCmd = flag.NewFlagSet("config", flag.ExitOnError)
 	configCmd.StringVar(&tgBotToken, "token", "", "Token do seu Telegram Bot")
 
