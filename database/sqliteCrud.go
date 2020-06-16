@@ -12,6 +12,9 @@ import (
 func GetConexao() (db *gorm.DB) {
 	db, err := gorm.Open("sqlite3", "database.db")
 	utils.CheckError(err)
+
+	db.AutoMigrate(&models.Usuario{})
+
 	return
 }
 

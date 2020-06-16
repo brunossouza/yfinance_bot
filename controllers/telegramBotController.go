@@ -29,29 +29,30 @@ func TelegramBotHandler() {
 		bot.Send(m.Sender, "/help ajuda\n\n/start iniciar bot\n/list lista sua ações")
 	})
 
-	bot.Handle("/list", func(m *tgbot.Message) {
-		var user = database.GetUsuario(m.Sender.ID)
-		bot.Send(m.Sender, user.UserID)
-	})
-
 	bot.Handle("/check", func(m *tgbot.Message) {
 		if m.Payload != "" {
 			payload := m.Payload
 			var tickers = strings.Split(payload, " ")
+			bot.Send(m.Sender, "Buscando os dados das cotações....")
 			for _, ticker := range tickers {
 				var msg = GetQuoteDataAsMessage(strings.ToUpper(ticker))
 				bot.Send(m.Sender, msg)
 			}
 		} else {
-			var msg = "usage: /check ticker ticker1 ... tickerN"
+			var msg = "Utilização: /check ticker ticker1 ... tickerN"
 			bot.Send(m.Sender, msg)
 		}
 	})
 
 	bot.Handle("/start", func(m *tgbot.Message) {
-		var user = models.Usuario{Nome: m.Sender.FirstName, Username: m.Sender.Username, UserID: m.Sender.ID}
-		database.SaveUsuario(&user)
-		bot.Send(m.Sender, "Usuário cadastrado")
+		var user = database.GetUsuario(m.Sender.ID)
+		if user.UserID == 0 {
+			user = models.Usuario{Nome: m.Sender.FirstName, Username: m.Sender.Username, UserID: m.Sender.ID}
+			database.SaveUsuario(&user)
+			bot.Send(m.Sender, "Usuário cadastrado.")
+		} else {
+			bot.Send(m.Sender, "Usuário já cadastrado")
+		}
 	})
 
 	bot.Start()
