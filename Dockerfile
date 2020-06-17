@@ -1,4 +1,4 @@
-FROM golang:alpine as build
+FROM golang:1.14 as build
 # All these steps will be cached
 RUN mkdir -p /app/src
 WORKDIR /app/src
@@ -11,7 +11,7 @@ RUN go mod download
 COPY . .
 
 # Build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /app/yfinance
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /app/yfinance
 
 
 FROM scratch

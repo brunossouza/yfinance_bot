@@ -71,6 +71,7 @@ func main() {
 		}
 
 	case "start":
+		go controllers.VerificarQuotacoes()
 		controllers.TelegramBotHandler()
 
 	default:

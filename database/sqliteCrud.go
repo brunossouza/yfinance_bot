@@ -61,15 +61,6 @@ func SaveUsuario(user *models.Usuario) {
 	db.Create(user)
 }
 
-// SaveAcao func para salvar os dados da ação
-func SaveAcao(acao *models.Acoes) {
-	db := GetConexao()
-	defer db.Close()
-
-	// Create
-	db.Create(acao)
-}
-
 // GetUsuario func para salvar os dados do usuário
 func GetUsuario(userID int) (user models.Usuario) {
 	db := GetConexao()
@@ -89,4 +80,23 @@ func HasUsuarioRegistred(userID int) bool {
 	db.Where("user_id = ?", userID).First(&user)
 
 	return user.UserID != 0
+}
+
+// SaveAcao func para salvar os dados da ação
+func SaveAcao(acao *models.Acoes) {
+	db := GetConexao()
+	defer db.Close()
+
+	// Create
+	db.Create(acao)
+}
+
+// GetAllAcoes func para salvar os dados do usuário
+func GetAllAcoes() (acoes []models.Acoes) {
+	db := GetConexao()
+	defer db.Close()
+
+	db.Find(&acoes)
+
+	return
 }

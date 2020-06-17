@@ -1,6 +1,8 @@
 package utils
 
-import "log"
+import (
+	"log"
+)
 
 // CheckError verifica erros
 func CheckError(err error) {

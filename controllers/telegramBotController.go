@@ -11,9 +11,16 @@ import (
 	tgbot "gopkg.in/tucnak/telebot.v2"
 )
 
-// TelegramBotHandler controlle de comandos do bot
-func TelegramBotHandler() {
+// checkUsuarioRegistrado checa se o usuário esta registrado
+func checkUsuarioRegistrado(msg *tgbot.Message, bot *tgbot.Bot) bool {
+	if !database.HasUsuarioRegistred(msg.Sender.ID) {
+		bot.Send(msg.Sender, "Usuário não registrado!!!\nEnvie o cammnado abaixo para registrar:\n\n/start")
+		return false
+	}
+	return true
+}
 
+func configBot() *tgbot.Bot {
 	config := database.GetTelegramBotConfig()
 
 	bot, err := tgbot.NewBot(tgbot.Settings{
@@ -25,6 +32,21 @@ func TelegramBotHandler() {
 		Poller: &tgbot.LongPoller{Timeout: 10 * time.Second},
 	})
 	utils.CheckError(err)
+
+	return bot
+}
+
+// SendMessage send Message
+func SendMessage(userID int, msg string) {
+	bot := configBot()
+	bot.Send(&tgbot.User{ID: userID}, msg)
+
+}
+
+// TelegramBotHandler controlle de comandos do bot
+func TelegramBotHandler() {
+
+	bot := configBot()
 
 	bot.Handle("/help", func(m *tgbot.Message) {
 		var helpMsg = "/help - ajuda\n\n" +
@@ -46,7 +68,7 @@ func TelegramBotHandler() {
 	})
 
 	bot.Handle("/status", func(m *tgbot.Message) {
-		if database.HasUsuarioRegistred(m.Sender.ID) {
+		if checkUsuarioRegistrado(m, bot) {
 			if m.Payload != "" {
 				payload := m.Payload
 				var tickers = strings.Split(payload, " ")
@@ -59,13 +81,11 @@ func TelegramBotHandler() {
 				var msg = "Utilização: /status ticker ticker1 ... tickerN"
 				bot.Send(m.Sender, msg)
 			}
-		} else {
-			bot.Send(m.Sender, "Usuário não registrado!!!\nEnvie o cammnado abaixo para registrar:\n\n/start")
 		}
 	})
 
 	bot.Handle("/check", func(m *tgbot.Message) {
-		if database.HasUsuarioRegistred(m.Sender.ID) {
+		if checkUsuarioRegistrado(m, bot) {
 			if m.Payload != "" {
 				payload := strings.Split(m.Payload, " ")
 
@@ -98,8 +118,6 @@ func TelegramBotHandler() {
 					}
 				}
 			}
-		} else {
-			bot.Send(m.Sender, "Usuário não registrado!!!\nEnvie o cammnado abaixo para registrar:\n\n/start")
 		}
 	})
 
